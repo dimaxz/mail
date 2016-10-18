@@ -51,7 +51,7 @@ class Attachment {
 		$this->name = $name;
 		return $this;
 	}
-	
+
 	function getDirpath() {
 		return $this->dirpath;
 	}
@@ -77,7 +77,7 @@ class Attachment {
 	 */
 	private function createTmpFile($data) {
 
-		$this->filepath = rtrim($this->dirpath, '/') . '/' . $this->getId() . '_'. strtolower(preg_replace('~[^A-Za-z0-9\.]~', '',  $this->getName() ));
+		$this->filepath = rtrim($this->dirpath, '/') . '/' . $this->getId() . '_' . strtolower(preg_replace('~[^A-Za-z0-9\.]~', '', $this->getName()));
 
 		file_put_contents($this->filepath, $data);
 

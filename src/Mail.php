@@ -14,9 +14,9 @@ class Mail {
 	protected $from;
 
 	protected $subject;
-	
+
 	protected $datetime;
-	
+
 	protected $are_attachments = false;
 
 	protected $attachments = [];
@@ -28,31 +28,31 @@ class Mail {
 	 * @var \Eden\Mail\Imap $imap 
 	 */
 	private $imap;
-			
+
 	function __construct(\Eden\Mail\Imap $imap, $uid, \Datetime $datetime, $subject, $from) {
-		
+
 		$this->imap = $imap;
-		
+
 		$this
 				->setUid($uid)
 				->setDatetime($datetime)
 				->setSubject($subject)
 				->setFrom($from)
-				;
+		;
 	}
-			
+
 	/**
 	 * Получение вложений
 	 * @return type
 	 */
 	function getAttachments() {
-		
+
 		if (count($this->attachments)) {
 			return $this->attachments;
 		}
-		
+
 		$this->loadBodyAndAttach();
-		
+
 		return $this->attachments;
 	}
 
@@ -65,35 +65,32 @@ class Mail {
 	 * @return type
 	 */
 	function getBody() {
-		
+
 		if (empty($this->body)) {
 			$this->loadBodyAndAttach();
 		}
 
 		return $this->body;
 	}
-	
+
 	/**
 	 * служебный метод получения содержимого и вложений
 	 * @return $this
 	 */
-	public function loadBodyAndAttach(){
+	public function loadBodyAndAttach() {
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
 
 		$this->body = $res['body'];
 
-		foreach ((array)$res['attachment'] as $name => $body){
-			
-			$this->attachments[]= new Attachment(
-					md5($this->getUid().$name), 
-					Helper::decodeString($name),
-					$_SERVER['DOCUMENT_ROOT'] . Config::getTmpDir(), 
-					$body);
-		}	
-		
+		foreach ((array) $res['attachment'] as $name => $body) {
+
+			$this->attachments[] = new Attachment(
+					md5($this->getUid() . $name), Helper::decodeString($name), $_SERVER['DOCUMENT_ROOT'] . Config::getTmpDir(), $body);
+		}
+
 		return $this;
 	}
-			
+
 	function getUid() {
 		return $this->uid;
 	}

@@ -90,11 +90,11 @@ class MailSource {
 	public function getMailBoxes() {
 		$mailboxes = [];
 
-		if(count($this->mailboxes))
+		if (count($this->mailboxes))
 			return $this->mailboxes;
-		
+
 		$boxes = $this->getConnection()->getMailboxes();
-		
+
 		foreach ($boxes as $id => $box) {
 			$mailboxes [] = (new MailBox($this->getConnection(), $id, $box["name"]))->setParent($box["parent"]);
 		}
@@ -103,13 +103,13 @@ class MailSource {
 	}
 
 	/**
-	 ** Отдаем почтовый ящик
+	 * * Отдаем почтовый ящик
 	 * @param type $name
 	 * @return \Mailbox\MailBox $MailBox
 	 */
 	public function getMailBox($name = "INBOX") {
-		foreach($this->getMailBoxes() as $Mailbox){
-			if($Mailbox->getName()==$name){
+		foreach ($this->getMailBoxes() as $Mailbox) {
+			if ($Mailbox->getName() == $name) {
 				$this->imap->setActiveMailbox($Mailbox->getId());
 				return $Mailbox;
 			}
@@ -125,7 +125,7 @@ class MailSource {
 
 		if (!$this->imap) {
 			$this->imap = Base\Index::imap(
-					$this->getHost(), $this->getLogin(), $this->getPassword(), $this->getPort(), $this->getSsl()
+							$this->getHost(), $this->getLogin(), $this->getPassword(), $this->getPort(), $this->getSsl()
 			);
 		}
 

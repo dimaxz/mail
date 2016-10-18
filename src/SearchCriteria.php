@@ -14,7 +14,7 @@ class SearchCriteria {
 	protected $subject;
 
 	protected $since;
-	
+
 	protected $attachment;
 
 	public function getFrom() {
@@ -43,7 +43,7 @@ class SearchCriteria {
 		$this->since = $since;
 		return $this;
 	}
-	
+
 	function getAttachment() {
 		return $this->attachment;
 	}

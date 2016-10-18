@@ -49,9 +49,9 @@ class MailBox {
 	}
 
 	public function getCount() {
-		if(!$thhis->count)
+		if (!$thhis->count)
 			$this->count = $this->imap->getEmailTotal();
-		
+
 		return $this->count;
 	}
 
@@ -74,19 +74,15 @@ class MailBox {
 	public function getMails($start = 0, $limit = 1000) {
 
 		$key = md5($start . $limit);
-		
+
 		if (count($this->mails[$key])) {
 			return $this->mails[$key];
 		}
 
-		foreach ($this->imap->getEmails($start, $limit ) as $email) {
-			
+		foreach ($this->imap->getEmails($start, $limit) as $email) {
+
 			$this->mails[$key] [] = (new Mail(
-					$this->imap, 
-					$email['uid'], 
-					(new \Datetime)->setTimestamp($email['date']), 
-					Helper::decodeMimeStr($email['topic']), 
-					$email['from']['email'])
+					$this->imap, $email['uid'], (new \Datetime)->setTimestamp($email['date']), Helper::decodeMimeStr($email['topic']), $email['from']['email'])
 					)
 					->setAre_attachments($email['attachment'])
 			;
@@ -115,14 +111,15 @@ class MailBox {
 	 * @param type $one поиск только первого попавшегося письма
 	 * @return array|\Mailbox\Mail $Mail
 	 */
-	public function getMailsByCriteria(SearchCriteria $Criteria,$all = false,$one = false) {
+	public function getMailsByCriteria(SearchCriteria $Criteria, $all = false, $one = false) {
 		$find = [];
-		
-		$i = 0; $step = 1000;
-		
-         while (true) {
 
-			foreach ((array) $this->getMails($i,$step) as $Mail) {
+		$i = 0;
+		$step = 1000;
+
+		while (true) {
+
+			foreach ((array) $this->getMails($i, $step) as $Mail) {
 
 				if ($Criteria->getFrom() && strtolower($Criteria->getFrom()) != strtolower($Mail->getFrom()))
 					continue;
@@ -154,30 +151,29 @@ class MailBox {
 						continue;
 				}
 
-				if($one===true)
+				if ($one === true)
 					return $Mail;
 
 				$find [] = $Mail;
 			}
-			
+
 			$i = $i + $step;
-			
-			if($all===false || $i >= $this->getCount())
+
+			if ($all === false || $i >= $this->getCount())
 				break;
-			 
-         }
-		
+		}
+
 
 
 		return $find;
 	}
-	
+
 	/**
 	 * 
 	 * @param SearchCriteria $Criteria
 	 * @param \Mailbox\Mail $Mail
 	 */
-	public function getMailByCriteria(SearchCriteria $Criteria,$all = false) {
+	public function getMailByCriteria(SearchCriteria $Criteria, $all = false) {
 		return $this->getMailsByCriteria($Criteria, $all, true);
 	}
 

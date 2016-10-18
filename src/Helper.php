@@ -25,8 +25,8 @@ class Helper {
 			$charset = 'default' == $part->charset ? 'auto' : $part->charset;
 			// imap_utf8 doesn't seem to work properly, so use Transcoder instead
 
-			if (strtoupper(str_replace('-', '', $charset)) != strtoupper(str_replace('-', '', $defcharset)) && 
-				$str =	@mb_convert_encoding(mb_convert_encoding(utf8_encode($part->text), 'WINDOWS-1252', 'UTF-8'), 'UTF-8', $charset) ) {
+			if (strtoupper(str_replace('-', '', $charset)) != strtoupper(str_replace('-', '', $defcharset)) &&
+					$str = @mb_convert_encoding(mb_convert_encoding(utf8_encode($part->text), 'WINDOWS-1252', 'UTF-8'), 'UTF-8', $charset)) {
 				$decoded .= $str;
 			} else {
 				$decoded .= $part->text;
@@ -42,13 +42,14 @@ class Helper {
 	}
 
 	static function decodeRFC2231($string, $charset = 'utf-8') {
-		if(preg_match("/^(.*?)'.*?'(.*?)$/", $string, $matches)) {
+		if (preg_match("/^(.*?)'.*?'(.*?)$/", $string, $matches)) {
 			$encoding = $matches[1];
 			$data = $matches[2];
-			if(self::isUrlEncoded($data)) {
+			if (self::isUrlEncoded($data)) {
 				$string = iconv(strtoupper($encoding), $charset . '//IGNORE', urldecode($data));
 			}
 		}
 		return $string;
-	}	
+	}
+
 }
