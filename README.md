@@ -1,4 +1,4 @@
-[![Build Status](http://jenkins.tradesoft.ru/job/evil-phpcs/1/badge/icon)](http://jenkins.tradesoft.ru/job/evil-phpcs/1/)
+[![Build Status](http://jenkins.tradesoft.ru/job/evil-phpcs/1/badge/icon)](http://jenkins.tradesoft.ru/job/evil-phpcs/1/console)
 
 # MailBox
 
