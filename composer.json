@@ -1,0 +1,20 @@
+{
+	"name": "libraries/mailbox",
+	"type": "library",
+	"description": "Функционал для работы с почтовым сервером, поддержка imap,pop2, smtp",
+	"authors": [
+		{
+			"name": "lanetz",
+			"email": "dmitry.lanetz@tradesoft.ru"
+		}
+	],
+	"require": {
+		"eden/mail"				: "4.0.*"
+	},	
+	"autoload": {
+		"psr-4": {
+			"Mailbox\\": "src/"
+		}
+	}
+
+}
