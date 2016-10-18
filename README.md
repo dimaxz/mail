@@ -1,3 +1,5 @@
+[![Build Status](http://jenkins.tradesoft.ru/job/evil-phpcs/1/badge/icon)](http://jenkins.tradesoft.ru/job/evil-phpcs/1/console)
+
 # MailBox
 
 Функционал для работы с почтовым сервером, поддержка imap (pop2, smtp в планах)
@@ -5,7 +7,8 @@
 Использует eden/mail
 
 Как использовать:
-```
+```php
+<?php
 //подключаем источник
 $MailSource = new \Mailbox\MailSource('imap.gmail.com', '***@autospares.lv',"****",993);
 
