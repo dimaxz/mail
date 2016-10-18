@@ -121,11 +121,28 @@ class MailBox {
 
 			foreach ((array) $this->getMails($i, $step) as $Mail) {
 
-				if ($Criteria->getFrom() && strtolower($Criteria->getFrom()) != strtolower($Mail->getFrom()))
-					continue;
-
-				if ($Criteria->getSubject() && strpos(strtolower($Mail->getSubject()), strtolower($Criteria->getSubject())) === false)
-					continue;
+				//для строки с приведением в массив
+				if ($Criteria->getFrom()){
+					$find_from = false;
+					$ar = (array)$Criteria->getFrom();
+					array_walk($ar, function($s,$key,$from) use (&$find_from) {
+						if(strtolower($s)==strtolower($from)) $find_from = true;
+					},$Mail->getFrom());
+					
+					if($find_from===false)
+						continue;
+				}
+				
+				if ($Criteria->getSubject()){
+					$find_subject = false;
+					$ar = (array)$Criteria->getSubject();
+					array_walk($ar, function($s,$key,$subject) use (&$find_subject) {
+						if(strpos(strtolower($subject), strtolower($s)) !== false) $find_subject = true;
+					},$Mail->getSubject());
+					
+					if($find_subject===false)
+						continue;
+				}
 
 				if ($Criteria->getSince() > 0 && $Mail->getDatetime()->getTimestamp() < (new \Datetime($Criteria->getSince()))->getTimestamp())
 					continue;
