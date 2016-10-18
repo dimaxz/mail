@@ -1,3 +1,5 @@
+[![Build Status](http://jenkins.tradesoft.ru/job/evil-phpcs/1/badge/icon)](http://jenkins.tradesoft.ru/job/evil-phpcs/1/)
+
 # MailBox
 
 Функционал для работы с почтовым сервером, поддержка imap (pop2, smtp в планах)
