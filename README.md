@@ -5,7 +5,8 @@
 Использует eden/mail
 
 Как использовать:
-```
+```php
+<?php
 //подключаем источник
 $MailSource = new \Mailbox\MailSource('imap.gmail.com', '***@autospares.lv',"****",993);
 
