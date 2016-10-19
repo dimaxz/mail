@@ -221,6 +221,156 @@ class Imap extends \Eden\Mail\Imap
     }
 	
     /**
+     * Returns a list of emails given a uid or set of uids
+     *
+     * @param *number|array $uid  A list of uid/s
+     * @param bool          $body Whether to also include the body
+     *
+     * @return array
+     */
+    public function getUniqueEmails($uid, $body = false)
+    {
+        Argument::i()
+            ->test(1, 'int', 'string', 'array')
+            ->test(2, 'bool');
+
+        //if not connected
+        if (!$this->socket) {
+            //then connect
+            $this->connect();
+        }
+
+        //if the total in this mailbox is 0
+        //it means they probably didn't select a mailbox
+        //or the mailbox selected is empty
+        if ($this->total == 0) {
+            //we might as well return an empty array
+            return array();
+        }
+
+        //if uid is an array
+        if (is_array($uid)) {
+            $uid = implode(',', $uid);
+        }
+
+        //lets call it
+        $items = array('UID', 'FLAGS', 'BODY[HEADER]');
+
+        if ($body) {
+            $items = array('UID', 'FLAGS', 'BODY[]');
+        }
+
+        $first = is_numeric($uid) ? true : false;
+
+        return $this->getEmailResponse('UID FETCH', array($uid, $this->getList($items)), $first);
+    }
+
+
+    /**
+     * Splits out body parts
+     * ie. plain, HTML, attachment
+     *
+     * @param string $content The content to parse
+     * @param array  $parts   The existing parts
+     *
+     * @return array
+     */
+    private function getParts($content, array $parts = array())
+    {
+        //separate the head and the body
+        list($head, $body) = preg_split("/\n\s*\n/", $content, 2);
+        //front()->output($head);
+        //get the headers
+        $head = $this->getHeaders($head);
+        //if content type is not set
+        if (!isset($head['content-type'])) {
+            return $parts;
+        }
+
+        //split the content type
+        if (is_array($head['content-type'])) {
+            $type = array($head['content-type'][1]);
+            if (strpos($type[0], ';') !== false) {
+                $type = explode(';', $type[0], 2);
+            }
+        } else {
+            $type = explode(';', $head['content-type'], 2);
+        }
+
+        //see if there are any extra stuff
+        $extra = array();
+        if (count($type) == 2) {
+            $extra = explode('; ', str_replace(array('"', "'"), '', trim($type[1])));
+        }
+
+        //the content type is the first part of this
+        $type = trim($type[0]);
+
+
+        //foreach extra
+        foreach ($extra as $i => $attr) {
+            //transform the extra array to a key value pair
+            $attr = explode('=', $attr, 2);
+            if (count($attr) > 1) {
+                list($key, $value) = $attr;
+                $extra[$key] = $value;
+            }
+            unset($extra[$i]);
+        }
+
+        //if a boundary is set
+        if (isset($extra['boundary'])) {
+            //split the body into sections
+            $sections = explode('--'.str_replace(array('"', "'"), '', $extra['boundary']), $body);
+            //we only want what's in the middle of these sections
+            array_pop($sections);
+            array_shift($sections);
+
+            //foreach section
+            foreach ($sections as $section) {
+                //get the parts of that
+                $parts = $this->getParts($section, $parts);
+            }
+        } else {
+            //if name is set, it's an attachment
+            //if encoding is set
+            if (isset($head['content-transfer-encoding'])) {
+                //the goal here is to make everytihg utf-8 standard
+                if (is_array($head['content-transfer-encoding'])) {
+                    $head['content-transfer-encoding'] = array_pop($head['content-transfer-encoding']);
+                }
+
+                switch (strtolower($head['content-transfer-encoding'])) {
+                    case 'binary':
+                        $body = imap_binary($body);
+                        break;
+                    case 'base64':
+                        $body = base64_decode($body);
+                        break;
+                    case 'quoted-printable':
+                        $body = quoted_printable_decode($body);
+                        break;
+                    case '7bit':
+                        $body = mb_convert_encoding($body, 'UTF-8', 'ISO-2022-JP');
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (isset($extra['name'])) {
+                //add to parts
+                $parts['attachment'][$extra['name']][$type] = $body;
+            } else {
+                //it's just a regular body
+                //add to parts
+                $parts[$type] = $body;
+            }
+        }
+        return $parts;
+    }
+	
+    /**
      * Splits emails into arrays
      *
      * @param *string $command    The IMAP command
@@ -251,7 +401,7 @@ class Imap extends \Eden\Mail\Imap
                 //if there is email data
                 if (!empty($email)) {
                     //create the email format and add it to emails
-                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, $flags);
+                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, !is_array($flags)?[]:$flags);
 
                     //if all we want is the first one
                     if ($first) {
@@ -318,7 +468,7 @@ class Imap extends \Eden\Mail\Imap
                 //if there is email data
                 if (!empty($email)) {
                     //create the email format and add it to emails
-                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, $flags);
+                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, !is_array($flags)?[]:$flags);
 
                     //if all we want is the first one
                     if ($first) {

@@ -16,6 +16,8 @@ class SearchCriteria {
 	protected $since;
 
 	protected $attachment;
+	
+	protected $attachment_reg;
 
 	public function getFrom() {
 		return $this->from;
@@ -50,6 +52,15 @@ class SearchCriteria {
 
 	function setAttachment($attachment) {
 		$this->attachment = $attachment;
+		return $this;
+	}
+	
+	function getAttachment_reg() {
+		return $this->attachment_reg;
+	}
+
+	function setAttachment_reg($attachment_reg) {
+		$this->attachment_reg = $attachment_reg;
 		return $this;
 	}
 

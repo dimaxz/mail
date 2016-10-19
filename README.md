@@ -29,6 +29,7 @@ $Criteria = (new \Mailbox\SearchCriteria)
 		->setFrom("artis.pesla@inchcape.lv")//от
 		->setSubject("прайс")//тем содержит
 		->setSince("2016-10-15")//не старше даты
+		->setAttachment_reg('m_price_\d+\-\d+\-\d+')//ищет вложение по регулярке
 		->setAttachment('m_price');//поиск с именем вложения
 
 //поиск первого совпадающего по критериям письма, по умолчанию ищет по 1000 последним письмам

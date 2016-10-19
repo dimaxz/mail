@@ -135,7 +135,9 @@ class MailBox {
 				
 				if ($Criteria->getSubject()){
 					$find_subject = false;
+					
 					$ar = (array)$Criteria->getSubject();
+					
 					array_walk($ar, function($s,$key,$subject) use (&$find_subject) {
 						if(strpos(strtolower($subject), strtolower($s)) !== false) $find_subject = true;
 					},$Mail->getSubject());
@@ -147,6 +149,7 @@ class MailBox {
 				if ($Criteria->getSince() > 0 && $Mail->getDatetime()->getTimestamp() < (new \Datetime($Criteria->getSince()))->getTimestamp())
 					continue;
 
+				//поиск совпадению по вложению
 				if ($Criteria->getAttachment()) {
 
 					if ($Mail->getAre_attachments() !== true)
@@ -158,7 +161,32 @@ class MailBox {
 
 					foreach ((array) $attachments as $Attachment) {
 
-						if (strpos(strtolower($Attachment->getName()), strtolower($Criteria->getAttachment())) !== false) {
+						if (strtolower($Attachment->getName())== strtolower($Criteria->getAttachment())) {
+							$find_attach = true;
+							break;
+						}
+					}
+
+					if ($find_attach === false)
+						continue;
+				}
+				
+				//поиск по вложению с регулярным выражением
+				if ($Criteria->getAttachment_reg()) {
+
+					if ($Mail->getAre_attachments() !== true)
+						continue;
+
+					ini_set('mbstring.internal_encoding', 'utf-8');	
+					
+					$rule_reg = '~('.mb_strtolower($Criteria->getAttachment_reg()).')~iu';
+
+					$attachments = $Mail->getAttachments();
+
+					$find_attach = false;
+
+					foreach ((array) $attachments as $Attachment) {
+						if (preg_match($rule_reg, $Attachment->getName() )) {
 							$find_attach = true;
 							break;
 						}
@@ -168,8 +196,7 @@ class MailBox {
 						continue;
 				}
 
-				if ($one === true)
-					return $Mail;
+				if ($one === true) return $Mail;
 
 				$find [] = $Mail;
 			}
