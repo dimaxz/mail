@@ -639,8 +639,9 @@ class Imap extends \Eden\Mail\Imap
             $messageId = '<eden-no-id-'.md5(uniqid()).'>';
         }
 
-        $attachment = is_array($headers2['content-type']) || (isset($headers2['content-type'])
-        && !is_array($headers2['content-type']) && strpos($headers2['content-type'], 'multipart/mixed') === 0) ;
+        $attachment = is_array($headers2['content-type']) || 
+				(isset($headers2['content-type']) && !is_array($headers2['content-type']) && strpos($headers2['content-type'], 'multipart/mixed') === 0) || 
+				(!is_array($headers2['content-type']) && strpos($headers2['content-disposition'], "filename") !== false );		
 
         $format = array(
             'id'            => $messageId,
