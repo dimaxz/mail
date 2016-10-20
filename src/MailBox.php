@@ -22,6 +22,8 @@ class MailBox {
 	protected $imap;
 
 	protected $parent;
+	
+	protected $limit = 1000;
 
 	function __construct(\Eden\Mail\Imap $imap, $id, $name) {
 		$this->imap = $imap;
@@ -31,6 +33,14 @@ class MailBox {
 		;
 	}
 
+	function getLimit() {
+		return $this->limit;
+	}
+
+	function setLimit($limit) {
+		$this->limit = $limit;
+	}
+	
 	function getParent() {
 		return $this->parent;
 	}
@@ -115,7 +125,7 @@ class MailBox {
 		$find = [];
 
 		$i = 0;
-		$step = 1000;
+		$step = $this->getLimit();
 
 		while (true) {
 
