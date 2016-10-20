@@ -320,17 +320,21 @@ class Imap extends \Eden\Mail\Imap
 
         //if a boundary is set
         if (isset($extra['boundary'])) {
+			
             //split the body into sections
             $sections = explode('--'.str_replace(array('"', "'"), '', $extra['boundary']), $body);
-            //we only want what's in the middle of these sections
-            array_pop($sections);
-            array_shift($sections);
+			
+			//we only want what's in the middle of these sections
+			//array_shift($sections);
+			//array_pop($sections);
 
             //foreach section
             foreach ($sections as $section) {
                 //get the parts of that
                 $parts = $this->getParts($section, $parts);
             }
+			
+			//ed($parts,1);
         } else {
             //if name is set, it's an attachment
             //if encoding is set
@@ -467,11 +471,13 @@ class Imap extends \Eden\Mail\Imap
 
                 //if there is email data
                 if (!empty($email)) {
+					
                     //create the email format and add it to emails
                     $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, !is_array($flags)?[]:$flags);
 
                     //if all we want is the first one
                     if ($first) {
+						
                         //just return this
                         return $emails[$uniqueId];
                     }
