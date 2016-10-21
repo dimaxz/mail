@@ -92,14 +92,18 @@ class Mail {
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
 
 		$this->body = $res['body'];
+			
 
 		foreach ((array) $res['attachment'] as $name => $body) {
+			
+			$name = Helper::decodeString($name);	
+			
 			if(count($Criteria->getAttachment_ext()) && preg_match('~.*\.(.*?)$~', $name ,$match) && !in_array($match[1],$Criteria->getAttachment_ext()) ){
 				continue;
 			}
 
 			$this->attachments[] = new Attachment(
-					md5($this->getUid() . $name), Helper::decodeString($name), $_SERVER['DOCUMENT_ROOT'] . Config::getTmpDir(), $body);
+					md5($this->getUid(). $name), $name, $_SERVER['DOCUMENT_ROOT'] . Config::getTmpDir(), $body);
 		}
 
 		return $this;

@@ -55,11 +55,11 @@ class Helper {
 	/**
 	 * Очистка старых файлов
 	 * @param type $dir
+	 * @param type $expire_time Время через которое файл считается устаревшим (в сек.)
+	 * @return boolean
 	 */
-	static function clearOldTmpFiles($dir){
+	static function clearOldTmpFiles($dir,$expire_time = 3000){
 		
-		$expire_time = 3000; // Время через которое файл считается устаревшим (в сек.)
-
 		$dir = rtrim($dir,"/");
 		
 		// проверяем, что $dir - каталог
