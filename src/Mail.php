@@ -10,6 +10,8 @@ namespace Mailbox;
 class Mail {
 
 	protected $uid;
+	
+	protected $message_id;
 
 	protected $from;
 
@@ -41,6 +43,15 @@ class Mail {
 		;
 	}
 
+	function getMessage_id() {
+		return $this->message_id;
+	}
+
+	function setMessage_id($message_id) {
+		$this->message_id = $message_id;
+		return $this;
+	}
+	
 	/**
 	 * Получение вложений
 	 * @return type

@@ -374,6 +374,14 @@ class Imap extends \Eden\Mail\Imap
         return $parts;
     }
 	
+	/**
+	 * получение макс времени работы скрипта
+	 * @return type
+	 */
+	private function getTimeOut() {
+		return self::TIMEOUT;
+	}
+	
     /**
      * Splits emails into arrays
      *
@@ -395,7 +403,7 @@ class Imap extends \Eden\Mail\Imap
         $start      = time();
 
         //while there is no hang
-        while (time() < ($start + self::TIMEOUT)) {
+        while (time() < ($start + $this->getTimeOut())) {
             //get a response line
             $line = str_replace("\n", '', $this->getLine());
 

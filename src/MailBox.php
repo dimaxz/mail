@@ -95,6 +95,7 @@ class MailBox {
 					$this->imap, $email['uid'], (new \Datetime)->setTimestamp($email['date']), Helper::decodeMimeStr($email['topic']), $email['from']['email'])
 					)
 					->setAre_attachments($email['attachment'])
+					->setMessage_id($email['id'])
 			;
 		}
 
