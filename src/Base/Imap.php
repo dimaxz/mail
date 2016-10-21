@@ -325,8 +325,11 @@ class Imap extends \Eden\Mail\Imap
             $sections = explode('--'.str_replace(array('"', "'"), '', $extra['boundary']), $body);
 			
 			//we only want what's in the middle of these sections
-			//array_shift($sections);
-			//array_pop($sections);
+			array_shift($sections);
+			
+			//удалим последний элемент предварительно убедившись в отсутсвии контента
+			if(strpos($sections[count($sections)-1],"Content-Type")===false)
+				array_pop($sections);
 
             //foreach section
             foreach ($sections as $section) {

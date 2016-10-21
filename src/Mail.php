@@ -56,13 +56,13 @@ class Mail {
 	 * Получение вложений
 	 * @return type
 	 */
-	function getAttachments() {
+	function getAttachments(SearchCriteria $Criteria) {
 
 		if (count($this->attachments)) {
 			return $this->attachments;
 		}
 
-		$this->loadBodyAndAttach();
+		$this->loadBodyAndAttach($Criteria);
 
 		return $this->attachments;
 	}
@@ -88,12 +88,15 @@ class Mail {
 	 * служебный метод получения содержимого и вложений
 	 * @return $this
 	 */
-	public function loadBodyAndAttach() {
+	public function loadBodyAndAttach(SearchCriteria $Criteria) {
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
 
 		$this->body = $res['body'];
 
 		foreach ((array) $res['attachment'] as $name => $body) {
+			if(count($Criteria->getAttachment_ext()) && preg_match('~.*\.(.*?)$~', $name ,$match) && !in_array($match[1],$Criteria->getAttachment_ext()) ){
+				continue;
+			}
 
 			$this->attachments[] = new Attachment(
 					md5($this->getUid() . $name), Helper::decodeString($name), $_SERVER['DOCUMENT_ROOT'] . Config::getTmpDir(), $body);

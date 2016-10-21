@@ -166,7 +166,7 @@ class MailBox {
 					if ($Mail->getAre_attachments() !== true)
 						continue;
 
-					$attachments = $Mail->getAttachments();
+					$attachments = $Mail->getAttachments($Criteria);
 
 					$find_attach = false;
 
@@ -191,7 +191,7 @@ class MailBox {
 					
 					$rule_reg = '~('.mb_strtolower($Criteria->getAttachment_reg()).')~iu';
 
-					$attachments = $Mail->getAttachments();
+					$attachments = $Mail->getAttachments($Criteria);
 
 					$find_attach = false;
 

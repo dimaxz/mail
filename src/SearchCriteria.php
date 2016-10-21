@@ -15,9 +15,23 @@ class SearchCriteria {
 
 	protected $since;
 
+	/**
+	 * фильтро по имени вложения
+	 * @var type 
+	 */
 	protected $attachment;
 	
+	/**
+	 * фильтро по имени вложения с использованием регулярки
+	 * @var type 
+	 */
 	protected $attachment_reg;
+	
+	/**
+	 * фильтр по расшитрению вложения
+	 * @var type 
+	 */
+	protected $attachment_ext;
 
 	public function getFrom() {
 		return $this->from;
@@ -61,6 +75,15 @@ class SearchCriteria {
 
 	function setAttachment_reg($attachment_reg) {
 		$this->attachment_reg = $attachment_reg;
+		return $this;
+	}
+	
+	function getAttachment_ext() {
+		return $this->attachment_ext;
+	}
+
+	function setAttachment_ext($attachment_ext) {
+		$this->attachment_ext = $attachment_ext;
 		return $this;
 	}
 
