@@ -170,8 +170,7 @@ class MailBox {
 					$find_attach = false;
 
 					foreach ((array) $attachments as $Attachment) {
-
-						if (strtolower($Attachment->getName())== strtolower($Criteria->getAttachment())) {
+						if (preg_match(sprintf("~^%s\.~usi",$Criteria->getAttachment()), $Attachment->getName() )) {	
 							$find_attach = true;
 							break;
 						}
