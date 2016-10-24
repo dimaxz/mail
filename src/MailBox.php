@@ -88,7 +88,7 @@ class MailBox {
 		if (count($this->mails[$key])) {
 			return $this->mails[$key];
 		}
-
+	
 		foreach ($this->imap->getEmails($start, $limit) as $email) {
 
 			$this->mails[$key] [] = (new Mail(
@@ -129,7 +129,7 @@ class MailBox {
 		$step = $this->getLimit();
 
 		while (true) {
-
+			
 			foreach ((array) $this->getMails($i, $step) as $Mail) {
 
 				//для строки с приведением в массив
@@ -205,7 +205,7 @@ class MailBox {
 					if ($find_attach === false)
 						continue;
 				}
-
+//ed($Mail);
 				if ($one === true) return $Mail;
 
 				$find [] = $Mail;

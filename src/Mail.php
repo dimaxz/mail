@@ -91,6 +91,9 @@ class Mail {
 	public function loadBodyAndAttach(SearchCriteria $Criteria) {
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
 
+		//страхуемся от неоотсветствия uid
+		if($res['uid']!=$this->getUid()) return $this;
+
 		$this->body = $res['body'];
 
 		foreach ((array) $res['attachment'] as $name => $body) {
