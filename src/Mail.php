@@ -94,13 +94,15 @@ class Mail {
 		
 		$this->body = $res['body'];
 			
-
 		foreach ((array) $res['attachment'] as $name => $body) {
 			
 			$name = Helper::decodeString($name);	
-			
-			if($Criteria && count($Criteria->getAttachment_ext()) && preg_match('~.*\.(.*?)$~', $name ,$match) && !in_array($match[1],$Criteria->getAttachment_ext()) ){
-				continue;
+
+			if(
+					$Criteria && count($Criteria->getAttachment_ext()) && //если есть критерии выборки и расширение не соответсвует
+					!preg_match(sprintf('~.*\.(%s)~is',implode($Criteria->getAttachment_ext(),"|")), $name ,$match) 
+					){
+					continue;
 			}
 
 			$this->attachments[] = new Attachment(
