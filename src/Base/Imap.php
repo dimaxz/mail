@@ -414,9 +414,9 @@ class Imap extends \Eden\Mail\Imap
             //it means it's the end of getting an email
             if (strpos($line, 'FETCH') !== false && strpos($line, 'TAG'.$this->tag) === false) {
                 //if there is email data
-                if (!empty($email)) {
+                if (!empty($email) && is_array($flags)) {
                     //create the email format and add it to emails
-                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, !is_array($flags)?[]:$flags);
+                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, $flags);
 
                     //if all we want is the first one
                     if ($first) {
@@ -481,10 +481,10 @@ class Imap extends \Eden\Mail\Imap
                 }
 
                 //if there is email data
-                if (!empty($email)) {
+                if (!empty($email) && is_array($flags)) {
 					
                     //create the email format and add it to emails
-                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, !is_array($flags)?[]:$flags);
+                    $emails[$uniqueId] = $this->getEmailFormat($email, $uniqueId, $flags);
 
                     //if all we want is the first one
                     if ($first) {
