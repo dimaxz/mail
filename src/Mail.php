@@ -56,7 +56,7 @@ class Mail {
 	 * Получение вложений
 	 * @return type
 	 */
-	function getAttachments(SearchCriteria $Criteria) {
+	function getAttachments(SearchCriteria $Criteria = null) {
 
 		if (count($this->attachments)) {
 			return $this->attachments;
@@ -88,9 +88,10 @@ class Mail {
 	 * служебный метод получения содержимого и вложений
 	 * @return $this
 	 */
-	public function loadBodyAndAttach(SearchCriteria $Criteria) {
+	public function loadBodyAndAttach(SearchCriteria $Criteria = null) {
+		
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
-
+		
 		$this->body = $res['body'];
 			
 
@@ -98,7 +99,7 @@ class Mail {
 			
 			$name = Helper::decodeString($name);	
 			
-			if(count($Criteria->getAttachment_ext()) && preg_match('~.*\.(.*?)$~', $name ,$match) && !in_array($match[1],$Criteria->getAttachment_ext()) ){
+			if($Criteria && count($Criteria->getAttachment_ext()) && preg_match('~.*\.(.*?)$~', $name ,$match) && !in_array($match[1],$Criteria->getAttachment_ext()) ){
 				continue;
 			}
 
