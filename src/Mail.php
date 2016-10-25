@@ -91,9 +91,9 @@ class Mail {
 	public function loadBodyAndAttach(SearchCriteria $Criteria = null) {
 		
 		$res = $this->imap->getUniqueEmails($this->getUid(), true);
-		
+
 		$this->body = $res['body'];
-			
+
 		foreach ((array) $res['attachment'] as $name => $body) {
 			
 			$name = Helper::decodeString($name);	

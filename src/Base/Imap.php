@@ -302,6 +302,10 @@ class Imap extends \Eden\Mail\Imap
         if (count($type) == 2) {
             $extra = explode('; ', str_replace(array('"', "'"), '', trim($type[1])));
         }
+		//пробуем опредлить вложение в content-disposition
+		elseif(strpos($head['content-disposition'],"filename")!==false){
+			$extra []= preg_replace("~attachment; filename=\"(.*?)\"~", "name=$1", $head['content-disposition']);
+		}
 
         //the content type is the first part of this
         $type = trim($type[0]);
@@ -323,7 +327,7 @@ class Imap extends \Eden\Mail\Imap
 			
             //split the body into sections
             $sections = explode('--'.str_replace(array('"', "'"), '', $extra['boundary']), $body);
-			
+					
 			//we only want what's in the middle of these sections
 			array_shift($sections);
 			
